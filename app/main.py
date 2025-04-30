@@ -8,6 +8,7 @@ import sys
 import pandas as pd
 import numpy as np
 from datetime import datetime, timedelta
+import uvicorn
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
@@ -222,3 +223,7 @@ async def backtest(
     except Exception as e:
         logger.error(f"Error running backtest for {ticker}: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
+
+if __name__ == "__main__":
+    # Run the FastAPI app with Uvicorn server
+    uvicorn.run("app.main:app", host="0.0.0.0", port=8000, reload=True)
