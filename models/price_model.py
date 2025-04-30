@@ -19,7 +19,7 @@ logger = logging.getLogger(__name__)
 class PriceModel:
     #Builds trains and evaluates stock prediction models
 
-    def __init__(self, model_dir: str = 'models/saved_models'):
+    def __init__(self, model_dir: str = 'saved_models'):
         self.model_dir = model_dir
         self.model = None
         self.scaler = StandardScaler()
