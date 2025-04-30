@@ -5,6 +5,7 @@ import numpy as np
 import pandas as pd
 from typing import Dict, Any, List, Tuple
 from datetime import datetime, timedelta
+import yfinance as yf
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
@@ -549,3 +550,22 @@ class PredictionService:
             reasoning = f"Current market conditions don't strongly favor either buying or selling. The RSI is at a neutral {rsi:.1f} and price is moving within normal ranges."
             
         return reasoning
+    
+if __name__ == "__main__":
+    
+    # Fetch some test data
+    df = yf.download("AAPL", period="1y")
+    
+    # Initialize service
+    service = PredictionService()
+    
+    # Get price prediction
+    prediction = service.predict_price(df, horizon_weeks=4)
+    print("Price Prediction:")
+    print(prediction)
+    
+    # Get trading recommendation
+    recommendation = service.get_recommendation(df)
+    print("\nTrading Recommendation:")
+    print(recommendation)
+                
