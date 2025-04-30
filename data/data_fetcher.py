@@ -130,3 +130,11 @@ class DataFetcher:
         rsi = 100 - (100 / (1 + rs))
 
         return rsi
+    
+if __name__ == "__main__":
+    fetcher = DataFetcher()
+    data = fetcher.fetch_data("AAPL", period="2y")
+    print(f"Retrieved {len(data)} recorsd for AAPL")
+
+    features, target = fetcher.preprocess_data(data)
+    print(f"Processed {len(features)} feature samples with {features.shape[1]} dimensions")
