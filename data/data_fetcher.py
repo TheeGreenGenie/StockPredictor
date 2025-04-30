@@ -107,3 +107,26 @@ class DataFetcher:
             return np.array([]), np.array([])
         
         feature_columns = ['Close', 'MA_5', 'MA_20', 'RSI', 'Volatility', 'Volume']
+        features = weekly[feature_columns].values
+
+        target = weekly['Close'].shift(-1).dropna().values
+
+        features = features[:-1]
+
+        return features, target
+    
+    def _calculate_rsi(self, prices: pd.Series, period: int = 14) -> pd.Series:
+        #Calculating the Relative Strength Index
+        delta = prices.diff()
+
+        gain = delta.where(delta > 0, 0)
+        loss = -delta.where(delta < 0, 0)
+
+        avg_gain = gain.rolling(window=period).mean()
+        avg_loss = loss.rolling(window=period).mean()
+
+        rs = avg_gain / avg_loss
+
+        rsi = 100 - (100 / (1 + rs))
+
+        return rsi
