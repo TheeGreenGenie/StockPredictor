@@ -289,7 +289,7 @@ class RLTradingAgent:
         if self.model is None:
             logger.error("Model not trained or loaded")
             return {'action': 'hold', 'confidence': 0.0}
-            
+        
         if len(df) < window_size:
             logger.error(f"Not enough data, need at least {window_size} rows")
             return {'action': 'hold', 'confidence': 0.0}
@@ -306,6 +306,9 @@ class RLTradingAgent:
         # Get model prediction
         action, _states = self.model.predict(observation, deterministic=True)
         
+        # Convert action to Python int immediately (this is the key fix)
+        action = int(action.item()) if hasattr(action, 'item') else int(action)
+        
         # Map action to string
         action_map = {0: 'hold', 1: 'buy', 2: 'sell'}
         action_str = action_map.get(action, 'hold')
@@ -321,11 +324,14 @@ class RLTradingAgent:
         except Exception as e:
             logger.warning(f"Could not get action probabilities: {str(e)}")
         
+        confidence_val = float(confidence)
+        current_price_val = float(df['Close'].iloc[-1])
+
         return {
-            'action': action_str,
-            'action_code': int(action),
-            'confidence': confidence,
-            'current_price': df['Close'].iloc[-1],
+            'action': action_map.get(action, 'hold'),  # No need for str() and int() conversions now
+            'action_code': action,
+            'confidence': confidence_val,
+            'current_price': current_price_val,
             'timestamp': df.index[-1] if isinstance(df.index, pd.DatetimeIndex) else None
         }
     

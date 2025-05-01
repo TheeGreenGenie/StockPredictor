@@ -9,6 +9,8 @@ import matplotlib.pyplot as plt
 import os
 import logging
 from typing import Tuple, Dict, Any, Union
+from joblib import dump
+import joblib
 
 logging.basicConfig(
     level=logging.INFO,
@@ -143,6 +145,9 @@ class PriceModel:
 
         model_path = os.path.join(self.model_dir, f"price_model_{model_type}.h5")
         self.model.save(model_path)
+        scaler_path = os.path.join(self.model_dir, f"price_model_scaler_{model_type}.pk1")
+        joblib.dump(self.scaler, scaler_path)
+
         logger.info(f"Model saved to {model_path}")
 
         return {
